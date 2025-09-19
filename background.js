@@ -1,18 +1,39 @@
+const MENU_IDS = {
+    baidu: 'search-baidu',
+    bing: 'search-bing'
+};
+
 chrome.contextMenus.create({
-    id: "some-command",
-    title: '使用百度搜索：%s',
-    contexts: ['selection']
-});
-chrome.contextMenus.create({
-    id: "test2",
-    title: '使用必应搜索：%s',
+    id: MENU_IDS.baidu,
+    title: '使用百度搜索 "%s"',
     contexts: ['selection']
 });
 
-chrome.contextMenus.onClicked.addListener(function (params, tab) {
-    if (params.menuItemId === "some-command") {
-        chrome.tabs.create({ url: 'https://www.baidu.com/s?ie=utf-8&wd=' + encodeURIComponent(params.selectionText) });
-    } else if (params.menuItemId === "test2") {
-        chrome.tabs.create({ url: 'https://cn.bing.com/search?q=' + encodeURIComponent(params.selectionText) });
+chrome.contextMenus.create({
+    id: MENU_IDS.bing,
+    title: '使用必应搜索 "%s"',
+    contexts: ['selection']
+});
+
+chrome.contextMenus.onClicked.addListener(async (info) => {
+    if (!info.selectionText) {
+        return;
+    }
+
+    const query = encodeURIComponent(info.selectionText);
+    let targetUrl = '';
+
+    if (info.menuItemId === MENU_IDS.baidu) {
+        targetUrl = `https://www.baidu.com/s?ie=utf-8&wd=${query}`;
+    } else if (info.menuItemId === MENU_IDS.bing) {
+        targetUrl = `https://cn.bing.com/search?q=${query}`;
+    } else {
+        return;
+    }
+
+    try {
+        await self.clients.openWindow(targetUrl);
+    } catch (error) {
+        console.error('Failed to open search page:', error);
     }
 });
