@@ -1,0 +1,21 @@
+{
+    "name": "another search",
+    "description": "用户在网页上选中任意文字后，点击右键即可直接通过百度或必应进行搜索",
+    "version": "2.0.0",
+    "manifest_version": 3,
+    "icons": {
+        "128": "icons/icon_128.png",
+        "48": "icons/icon_48.png",
+        "16": "icons/icon_16.png"
+    },
+    "action": {
+        "default_icon": "icons/24.png"
+    },
+    "permissions": [
+        "contextMenus",
+        "tabs"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    }
+}
