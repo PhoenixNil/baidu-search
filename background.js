@@ -15,7 +15,7 @@ chrome.contextMenus.create({
     contexts: ['selection']
 });
 
-chrome.contextMenus.onClicked.addListener(async (info) => {
+chrome.contextMenus.onClicked.addListener((info) => {
     if (!info.selectionText) {
         return;
     }
@@ -26,14 +26,14 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     if (info.menuItemId === MENU_IDS.baidu) {
         targetUrl = `https://www.baidu.com/s?ie=utf-8&wd=${query}`;
     } else if (info.menuItemId === MENU_IDS.bing) {
-        targetUrl = `https://cn.bing.com/search?q=${query}`;
+        targetUrl = `https://bing.com/search?q=${query}`;
     } else {
         return;
     }
 
-    try {
-        await self.clients.openWindow(targetUrl);
-    } catch (error) {
-        console.error('Failed to open search page:', error);
-    }
+    chrome.tabs.create({ url: targetUrl }, () => {
+        if (chrome.runtime.lastError) {
+            console.error('Failed to open search page:', chrome.runtime.lastError);
+        }
+    });
 });
